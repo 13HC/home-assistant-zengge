@@ -6,7 +6,7 @@ Control your Zengge bluetooth mesh lights from Home Assistant!
 ## Install with HACS (recommended)
 
 Do you have [HACS](https://hacs.xyz/) installed?
-1. Add **Zengge Mesh** as custom repository.
+1. Add **Zengge Mesh - RH** as custom repository.
    1. Go to: `HACS` -> `Integrations` -> Click menu in right top -> Custom repositories
    1. A modal opens
    1. Fill https://github.com/SleepyNinja0o/home-assistant-zengge in the input in the footer of the modal
