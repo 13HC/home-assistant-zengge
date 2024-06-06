@@ -3,7 +3,7 @@
 import asyncio
 import logging
 
-from .zengge_mesh import ZenggeMeshRH
+from .zengge_mesh import ZenggeMesh-RH
 from .const import DOMAIN, CONF_MESH_NAME, CONF_MESH_PASSWORD, CONF_MESH_KEY
 
 from homeassistant.components.light import DOMAIN as LIGHT_DOMAIN
@@ -29,7 +29,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     _LOGGER.info('setup config flow entry %s', entry.data)
 
-    mesh = ZenggeMeshRH(hass, entry.data[CONF_MESH_NAME], entry.data[CONF_MESH_PASSWORD], entry.data[CONF_MESH_KEY])
+    mesh = ZenggeMesh(hass, entry.data[CONF_MESH_NAME], entry.data[CONF_MESH_PASSWORD], entry.data[CONF_MESH_KEY])
 
     # Make `mesh` accessible for all platforms
     hass.data[DOMAIN][entry.entry_id] = mesh

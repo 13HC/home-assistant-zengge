@@ -16,7 +16,7 @@ from .const import DOMAIN
 _LOGGER = logging.getLogger(__name__)
 
 
-class ZenggeMeshRH(DataUpdateCoordinator):
+class ZenggeMesh(DataUpdateCoordinator):
 
     def __init__(self, hass: HomeAssistant, mesh_name: str, mesh_password: str, mesh_long_term_key: str):
         """
