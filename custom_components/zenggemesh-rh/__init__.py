@@ -3,7 +3,7 @@
 import asyncio
 import logging
 
-from .zengge_mesh import ZenggeMesh-RH
+from .zengge_mesh import ZenggeMesh
 from .const import DOMAIN, CONF_MESH_NAME, CONF_MESH_PASSWORD, CONF_MESH_KEY
 
 from homeassistant.components.light import DOMAIN as LIGHT_DOMAIN
