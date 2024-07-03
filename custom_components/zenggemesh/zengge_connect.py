@@ -120,8 +120,11 @@ class ZenggeConnect:
             response = requests.get(MAGICHUE_CONNECTURL + MAGICHUE_GET_MESH_ENDPOINT + urllib.parse.quote_plus(self._user_id), headers=headers)
             if response.status_code != 200:
                 raise Exception('Loading data failed - %s' % response.json()['error'])
-            _LOGGER.error('Full response for Mesh: ' + response.json())
-            self._mesh = response.json()['result'][0]
+
+            for result in response.json()['result'] :
+                self._mesh += result
+
+            #self._mesh = response.json()['result'][0]
             return self._mesh
         else:
             raise Exception('No login session detected! - %s' % response.json()['error'])
