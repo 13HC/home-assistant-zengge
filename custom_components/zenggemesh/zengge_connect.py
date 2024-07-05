@@ -122,8 +122,10 @@ class ZenggeConnect:
                 raise Exception('Loading data failed - %s' % response.json()['error'])
             
             _tmpMesh = {}
+            _tmp2Mesh = {}
             for result in response.json()['result'] :
-                _tmpMesh.update(result)
+                _tmp2Mesh = _tmpMesh
+                _tmpMesh = dict(_tmp2Mesh, result)
 
             self._mesh = _tmpMesh
             #self._mesh = response.json()['result'][0]
