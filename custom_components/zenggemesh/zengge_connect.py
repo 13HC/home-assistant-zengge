@@ -86,6 +86,7 @@ class ZenggeConnect:
             'Accept-Encoding': 'gzip'
         }
 
+
         response = requests.post(MAGICHUE_CONNECTURL + MAGICHUE_USER_LOGIN_ENDPOINT, headers=headers, json=payload)
         _LOGGER.info("Zengge server response: " + repr(response.json()))
 
@@ -124,8 +125,8 @@ class ZenggeConnect:
             _tmpMesh = {}
             _tmp2Mesh = {}
             for result in response.json()['result'] :
-                _tmp2Mesh = _tmpMesh
-                _tmpMesh = dict(_tmp2Mesh, result)
+                #_tmp2Mesh = _tmpMesh
+                _tmpMesh = result
 
             self._mesh = _tmpMesh
             #self._mesh = response.json()['result'][0]
