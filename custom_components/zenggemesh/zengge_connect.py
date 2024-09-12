@@ -122,10 +122,12 @@ class ZenggeConnect:
             if response.status_code != 200:
                 raise Exception('Loading data failed - %s' % response.json()['error'])
             
+            _Meshes = {}
             _tmpMesh = {}
             _tmp2Mesh = {}
             _LOGGER.debug("Response to MESH get: - %s" % str(response.json()['result']))
             for result in response.json()['result'] :
+                _Meshes.append(result['placeUniID']);
                 #_tmp2Mesh = _tmpMesh
                 _tmpMesh = result
 
@@ -145,6 +147,10 @@ class ZenggeConnect:
                 'Content-Type': 'application/json',
                 'Accept-Encoding': 'gzip'
             }
+
+            for MeshID in self.Meshes:
+                _LOGGER.debug("Get Device for Mesh placeUniID: - %s" % MeshID)
+                placeUniID = MeshID
 
             placeUniID = self._mesh['placeUniID']
             MAGICHUE_GET_MESH_DEVICES_ENDPOINTNEW = MAGICHUE_GET_MESH_DEVICES_ENDPOINT.replace("placeUniID=","placeUniID=" + placeUniID)
