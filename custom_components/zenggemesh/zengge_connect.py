@@ -152,20 +152,37 @@ class ZenggeConnect:
             for MeshID in self._Meshes:
                 _LOGGER.debug("Get Device for Mesh placeUniID: - %s" % MeshID)
                 placeUniID = MeshID
+                MAGICHUE_GET_MESH_DEVICES_ENDPOINTNEW = MAGICHUE_GET_MESH_DEVICES_ENDPOINT.replace("placeUniID=","placeUniID=" + placeUniID)
+                MAGICHUE_GET_MESH_DEVICES_ENDPOINTNEW = MAGICHUE_GET_MESH_DEVICES_ENDPOINTNEW.replace("userId=","userId="+urllib.parse.quote_plus(self._user_id))
 
-            placeUniID = self._mesh['placeUniID']
-            MAGICHUE_GET_MESH_DEVICES_ENDPOINTNEW = MAGICHUE_GET_MESH_DEVICES_ENDPOINT.replace("placeUniID=","placeUniID=" + placeUniID)
-            MAGICHUE_GET_MESH_DEVICES_ENDPOINTNEW = MAGICHUE_GET_MESH_DEVICES_ENDPOINTNEW.replace("userId=","userId="+urllib.parse.quote_plus(self._user_id))
-
-            #response = requests.get(MAGICHUE_CONNECTURL + MAGICHUE_GET_MESH_DEVICES_ENDPOINTNEW, headers=headers)
-            async with aiohttp.ClientSession() as session:
-                async with session.get(MAGICHUE_CONNECTURL + MAGICHUE_GET_MESH_DEVICES_ENDPOINTNEW, headers=headers) as response:
-                    if response.status != 200: #Previous code:   if response.status_code != 200:
-                        raise Exception('Device retrieval for mesh failed - %s' % response.json()['error'])
-                    else:
-                        responseJSON = (await response.json())['result'] #Previous Code:  responseJSON = response.json()['result'] #Previous Code:  
-                        _LOGGER.debug("Response to device get: - %s" % str(responseJSON))
-                        self._mesh.update({'devices':responseJSON})
-                        return responseJSON
+                #response = requests.get(MAGICHUE_CONNECTURL + MAGICHUE_GET_MESH_DEVICES_ENDPOINTNEW, headers=headers)
+                async with aiohttp.ClientSession() as session:
+                    async with session.get(MAGICHUE_CONNECTURL + MAGICHUE_GET_MESH_DEVICES_ENDPOINTNEW, headers=headers) as response:
+                        if response.status != 200: #Previous code:   if response.status_code != 200:
+                            raise Exception('Device retrieval for mesh failed - %s' % response.json()['error'])
+                        else:
+                            responseJSON = (await response.json())['result'] #Previous Code:  responseJSON = response.json()['result'] #Previous Code:  
+                            _LOGGER.debug("Response to device get: - %s" % str(responseJSON))
+                            self._mesh.update({'devices':responseJSON})
+                            return responseJSON
         else:
             raise Exception('No login session detected! - %s' % response.json()['error'])
+            
+                
+                
+     #       placeUniID = self._mesh['placeUniID']
+     #       MAGICHUE_GET_MESH_DEVICES_ENDPOINTNEW = MAGICHUE_GET_MESH_DEVICES_ENDPOINT.replace("placeUniID=","placeUniID=" + placeUniID)
+     #       MAGICHUE_GET_MESH_DEVICES_ENDPOINTNEW = MAGICHUE_GET_MESH_DEVICES_ENDPOINTNEW.replace("userId=","userId="+urllib.parse.quote_plus(self._user_id))
+
+     #       #response = requests.get(MAGICHUE_CONNECTURL + MAGICHUE_GET_MESH_DEVICES_ENDPOINTNEW, headers=headers)
+     #       async with aiohttp.ClientSession() as session:
+     #           async with session.get(MAGICHUE_CONNECTURL + MAGICHUE_GET_MESH_DEVICES_ENDPOINTNEW, headers=headers) as response:
+     #               if response.status != 200: #Previous code:   if response.status_code != 200:
+     #                   raise Exception('Device retrieval for mesh failed - %s' % response.json()['error'])
+     #               else:
+     #                   responseJSON = (await response.json())['result'] #Previous Code:  responseJSON = response.json()['result'] #Previous Code:  
+     #                   _LOGGER.debug("Response to device get: - %s" % str(responseJSON))
+     #                   self._mesh.update({'devices':responseJSON})
+     #                   return responseJSON
+     #   else:
+     #       raise Exception('No login session detected! - %s' % response.json()['error'])
