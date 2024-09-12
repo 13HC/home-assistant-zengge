@@ -124,7 +124,7 @@ class ZenggeConnect:
             
             _tmpMesh = {}
             _tmp2Mesh = {}
-            _LOGGER.debug("Response to device get: - %s" % str(response.json()))
+            _LOGGER.debug("Response to MESH get: - %s" % str(response.json()))
             for result in response.json()['result'] :
                 #_tmp2Mesh = _tmpMesh
                 _tmpMesh = result
@@ -156,6 +156,7 @@ class ZenggeConnect:
                     if response.status != 200: #Previous code:   if response.status_code != 200:
                         raise Exception('Device retrieval for mesh failed - %s' % response.json()['error'])
                     else:
+                        _LOGGER.debug("Response to device get: - %s" % str(response.json()))
                         responseJSON = (await response.json())['result'] #Previous Code:  responseJSON = response.json()['result'] #Previous Code:  
                         self._mesh.update({'devices':responseJSON})
                         return responseJSON
