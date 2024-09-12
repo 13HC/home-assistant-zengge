@@ -122,7 +122,7 @@ class ZenggeConnect:
             if response.status_code != 200:
                 raise Exception('Loading data failed - %s' % response.json()['error'])
             
-            _Meshes = {}
+            _Meshes = []
             _tmpMesh = {}
             _tmp2Mesh = {}
             _LOGGER.debug("Response to MESH get: - %s" % str(response.json()['result']))
