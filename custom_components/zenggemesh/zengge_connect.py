@@ -124,6 +124,7 @@ class ZenggeConnect:
             
             _tmpMesh = {}
             _tmp2Mesh = {}
+            _LOGGER.debug("Response to device get: - %s" % str(response.json()))
             for result in response.json()['result'] :
                 #_tmp2Mesh = _tmpMesh
                 _tmpMesh = result
