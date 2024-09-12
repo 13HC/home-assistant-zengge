@@ -131,6 +131,7 @@ class ZenggeConnect:
                 #_tmp2Mesh = _tmpMesh
                 _tmpMesh = result
 
+            self._Meshes = _Meshes
             self._mesh = _tmpMesh
             #self._mesh = response.json()['result'][0]
             return self._mesh
@@ -148,7 +149,7 @@ class ZenggeConnect:
                 'Accept-Encoding': 'gzip'
             }
 
-            for MeshID in self.Meshes:
+            for MeshID in self._Meshes:
                 _LOGGER.debug("Get Device for Mesh placeUniID: - %s" % MeshID)
                 placeUniID = MeshID
 
