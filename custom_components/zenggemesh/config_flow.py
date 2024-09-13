@@ -167,53 +167,54 @@ class ZenggeMeshFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 errors=errors,
             )
 
-        _meshIDs = zengge_connect.MeshIDs
+        _meshIDs = ['12f1fb9d-75f9-4d52-890b-aeddaf0fdeb8', '8fb78db4-87e1-4125-b8db-8c8306fc0b05']
         _LOGGER.debug('Do we have mesh names? - %s', _meshIDs)
-
         devices = []
-        for device in await zengge_connect.devices():
-            _LOGGER.debug('Processing device - %s', device)
-            if 'wiringType' in device:
-                if device['wiringType'] == 0:
-                    _LOGGER.warning('Skipped device, wiringType of 0 - %s', device)
+
+        for MeshID in _meshIDs:
+            for device in await zengge_connect.getMeshDevices(MeshID):
+                _LOGGER.debug('Processing device - %s', device)
+                if 'wiringType' in device:
+                    if device['wiringType'] == 0:
+                        _LOGGER.warning('Skipped device, wiringType of 0 - %s', device)
+                        continue
+                if 'deviceType' not in device:
+                    _LOGGER.warning('Skipped device, missing deviceType - %s', device)
                     continue
-            if 'deviceType' not in device:
-                _LOGGER.warning('Skipped device, missing deviceType - %s', device)
-                continue
-            if 'meshAddress' not in device or not device['meshAddress']:
-                _LOGGER.warning('Skipped device, missing meshAddress - %s', device)
-                continue
-            if 'macAddress' not in device:
-                _LOGGER.warning('Skipped device, missing macAddress - %s', device)
-                continue
-            if 'displayName' not in device:
-                _LOGGER.warning('Skipped device, missing displayName - %s', device)
-                continue
+                if 'meshAddress' not in device or not device['meshAddress']:
+                    _LOGGER.warning('Skipped device, missing meshAddress - %s', device)
+                    continue
+                if 'macAddress' not in device:
+                    _LOGGER.warning('Skipped device, missing macAddress - %s', device)
+                    continue
+                if 'displayName' not in device:
+                    _LOGGER.warning('Skipped device, missing displayName - %s', device)
+                    continue
 
-            if 'modelName' not in device:
-                device['modelName'] = 'unknown'
-            if 'vendor' not in device:
-                device['vendor'] = 'unknown'
-            if 'firmwareRevision' not in device:
-                device['firmwareRevision'] = 'unknown'
-            if 'versionNum' not in device:
-                device['versionNum'] = None
-            if device['deviceType'] == 65:
-                typeStr = 'light|color|temperature|dimming'
-            else:
-                _LOGGER.warning('deviceType #: %s', device['deviceType'])
-                typeStr = 'light|color|temperature|dimming'
+                if 'modelName' not in device:
+                    device['modelName'] = 'unknown'
+                if 'vendor' not in device:
+                    device['vendor'] = 'unknown'
+                if 'firmwareRevision' not in device:
+                    device['firmwareRevision'] = 'unknown'
+                if 'versionNum' not in device:
+                    device['versionNum'] = None
+                if device['deviceType'] == 65:
+                    typeStr = 'light|color|temperature|dimming'
+                else:
+                    _LOGGER.warning('deviceType #: %s', device['deviceType'])
+                    typeStr = 'light|color|temperature|dimming'
 
-            devices.append({
-                'mesh_id': int(device['meshAddress']),
-                'name': device['displayName'],
-                'mac': device['macAddress'],
-                'model': device['modelName'],
-                'manufacturer': device['vendor'],
-                'firmware': device['firmwareRevision'],
-                'hardware': device['versionNum'],
-                'type': typeStr
-            })
+                devices.append({
+                    'mesh_id': int(device['meshAddress']),
+                    'name': device['displayName'],
+                    'mac': device['macAddress'],
+                    'model': device['modelName'],
+                    'manufacturer': device['vendor'],
+                    'firmware': device['firmwareRevision'],
+                    'hardware': device['versionNum'],
+                    'type': typeStr
+                })
 
         if len(devices) == 0:
             return self.async_abort(reason="no_devices_found")
