@@ -167,7 +167,8 @@ class ZenggeMeshFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 errors=errors,
             )
 
-        _LOGGER.debug('Do we have mesh names? - %s', zengge_connect.MeshIDs)
+        _meshIDs = zengge_connect.MeshIDs
+        _LOGGER.debug('Do we have mesh names? - %s', _meshIDs)
 
         devices = []
         for device in await zengge_connect.devices():
