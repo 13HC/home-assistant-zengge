@@ -187,3 +187,6 @@ class ZenggeConnect:
      #                   return responseJSON
      #   else:
      #       raise Exception('No login session detected! - %s' % response.json()['error'])
+
+    def MeshIDs(self):
+         return self._Meshes
