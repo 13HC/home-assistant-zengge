@@ -13,6 +13,7 @@ from homeassistant.const import (
     CONF_USERNAME,
     CONF_PASSWORD,
     CONF_COUNTRY,
+    CONF_BRIDGE,
 )
 
 from homeassistant.helpers.selector import (
@@ -27,8 +28,8 @@ from .zengge_connect import ZenggeConnect
 _LOGGER = logging.getLogger(__name__)
 
 
-def create_zengge_connect_object(username, password, country) -> ZenggeConnect:
-    return ZenggeConnect(username, password, country)
+def create_zengge_connect_object(username, password, country, bridge) -> ZenggeConnect:
+    return ZenggeConnect(username, password, country, bridge)
 
 
 class ZenggeMeshFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
@@ -59,7 +60,8 @@ class ZenggeMeshFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 user_input.get('mac'),
                 self._mesh_info.get(CONF_MESH_NAME),
                 self._mesh_info.get(CONF_MESH_PASSWORD),
-                self._mesh_info.get(CONF_MESH_KEY)
+                self._mesh_info.get(CONF_MESH_KEY),
+                self._mesh_info.get(CONF_MESH_BRIDGE)
             )
 
             if not test_ok:
@@ -73,7 +75,8 @@ class ZenggeMeshFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 user_input.get('name'),
                 self._mesh_info.get(CONF_MESH_NAME),
                 self._mesh_info.get(CONF_MESH_PASSWORD),
-                self._mesh_info.get(CONF_MESH_KEY)
+                self._mesh_info.get(CONF_MESH_KEY),
+                self._mesh_info.get(CONF_MESH_BRIDGE)
             )
 
         # Scan for devices
@@ -134,6 +137,7 @@ class ZenggeMeshFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         username: str = ''
         password: str = ''
         country: str = ''
+        bridge: str = ''
         typeStr: str = ''
         zengge_connect = None
 
@@ -144,10 +148,11 @@ class ZenggeMeshFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             _LOGGER.info('Before Country')
             country = user_input.get(CONF_COUNTRY)
             _LOGGER.info('Country: [%s]', country)
+            bridge = user_input.get(CONF_BRIDGE)
 
-        if username and password and country:
+        if username and password and country and bridge:
             try:
-                zengge_connect = await self.hass.async_add_executor_job(create_zengge_connect_object, username, password, country)
+                zengge_connect = await self.hass.async_add_executor_job(create_zengge_connect_object, username, password, country, bridge)
             except Exception as e:
                 _LOGGER.error('Can not login to Zengge cloud [%s]', e)
                 errors[CONF_PASSWORD] = 'cannot_connect'
@@ -161,6 +166,11 @@ class ZenggeMeshFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                     vol.Required(CONF_COUNTRY): SelectSelector(
                         SelectSelectorConfig(
                             mode=SelectSelectorMode.DROPDOWN, options=['AU','AL','CN','GB','ES','FR','DE','IT','JP','RU','US']
+                        )
+                    ),
+                    vol.Required(CONF_BRIDGE): SelectSelector(
+                        SelectSelectorConfig(
+                            mode=SelectSelectorMode.DROPDOWN, options=['0','1','2','3','4','5','6','7','8','9','10']
                         )
                     ),
                 }),

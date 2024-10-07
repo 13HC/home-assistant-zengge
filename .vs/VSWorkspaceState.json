@@ -1,0 +1,11 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\custom_components",
+    "\\custom_components\\zenggemesh",
+    "\\custom_components\\zenggemesh\\translations",
+    "\\custom_components\\zenggemesh\\zenggemeshlight"
+  ],
+  "SelectedNode": "\\custom_components\\zenggemesh\\config_flow.py",
+  "PreviewInSolutionExplorer": false
+}

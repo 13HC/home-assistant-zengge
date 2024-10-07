@@ -32,11 +32,12 @@ def get_country_server(country):
 
 class ZenggeConnect:
 
-    def __init__(self, username: str, password: str, country: str, installation_id: str = None):
+    def __init__(self, username: str, password: str, country: str, installation_id: str = None, bridge: str = '0'):
         global MAGICHUE_COUNTRY_SERVER,MAGICHUE_CONNECTURL
         self._username = username
         self._password = password
         self._country = country
+        self._bridge = bridge
 
         self._md5password = hashlib.md5(password.encode()).hexdigest()
 
@@ -122,21 +123,28 @@ class ZenggeConnect:
             if response.status_code != 200:
                 raise Exception('Loading data failed - %s' % response.json()['error'])
             
-            _Meshes = []
-            _tmpMesh = {}
-            _tmp2Mesh = {}
-            _LOGGER.debug("Response to MESH get: - %s" % str(response.json()['result']))
-            for result in response.json()['result'] :
-                _Meshes.append(result['placeUniID']);
-                #_tmp2Mesh = _tmpMesh
-                _tmpMesh = result
-
-            self._Meshes = _Meshes
-            self._mesh = _tmpMesh
-            #self._mesh = response.json()['result'][0]
-            _LOGGER.debug("Array of Mesh placeUniID: - %s" % str(_Meshes))
-
+            response = requests.get(MAGICHUE_CONNECTURL + MAGICHUE_GET_MESH_ENDPOINT + urllib.parse.quote_plus(self._user_id), headers=headers)
+            if response.status_code != 200:
+                raise Exception('Loading data failed - %s' % response.json()['error'])
+            self._mesh = response.json()['result'][bridge]
             return self._mesh
+
+
+       #     _Meshes = []
+       #     _tmpMesh = {}
+       #     _tmp2Mesh = {}
+       #     _LOGGER.debug("Response to MESH get: - %s" % str(response.json()['result']))
+       #     for result in response.json()['result'] :
+       #         _Meshes.append(result['placeUniID']);
+       #         #_tmp2Mesh = _tmpMesh
+       #         _tmpMesh = result
+#
+#            self._Meshes = _Meshes
+#            self._mesh = _tmpMesh
+#            #self._mesh = response.json()['result'][0]
+#            _LOGGER.debug("Array of Mesh placeUniID: - %s" % str(_Meshes))
+
+#            return self._mesh
         else:
             raise Exception('No login session detected! - %s' % response.json()['error'])
 
