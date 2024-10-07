@@ -11,7 +11,8 @@
         "data": {
           "mesh_name": "Mesh user name",
           "mesh_password": "Mesh password",
-          "mesh_key": "Mesh long term key"
+          "mesh_key": "Mesh long term key",
+          "mesh_bridge": "Which Bridge to connect to"
         }
       },
       "manual": {
