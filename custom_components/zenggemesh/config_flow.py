@@ -12,8 +12,7 @@ from homeassistant import config_entries
 from homeassistant.const import (
     CONF_USERNAME,
     CONF_PASSWORD,
-    CONF_COUNTRY,
-    CONF_BRIDGE,
+    CONF_COUNTRY
 )
 
 from homeassistant.helpers.selector import (
