@@ -147,7 +147,7 @@ class ZenggeMeshFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             _LOGGER.info('Before Country')
             country = user_input.get(CONF_COUNTRY)
             _LOGGER.info('Country: [%s]', country)
-            bridge = user_input.get(CONF_BRIDGE)
+            bridge = ''
 
         if username and password and country and bridge:
             try:
@@ -167,7 +167,7 @@ class ZenggeMeshFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                             mode=SelectSelectorMode.DROPDOWN, options=['AU','AL','CN','GB','ES','FR','DE','IT','JP','RU','US']
                         )
                     ),
-                    vol.Required(CONF_BRIDGE): SelectSelector(
+                    vol.Required(bridge): SelectSelector(
                         SelectSelectorConfig(
                             mode=SelectSelectorMode.DROPDOWN, options=['0','1','2','3','4','5','6','7','8','9','10']
                         )
