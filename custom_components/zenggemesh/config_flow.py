@@ -12,8 +12,7 @@ from homeassistant import config_entries
 from homeassistant.const import (
     CONF_USERNAME,
     CONF_PASSWORD,
-    CONF_COUNTRY,
-    CONF_BRIDGE
+    CONF_COUNTRY
 )
 
 from homeassistant.helpers.selector import (
@@ -22,7 +21,7 @@ from homeassistant.helpers.selector import (
     SelectSelectorMode,
 )
 
-from .const import DOMAIN, CONF_MESH_NAME, CONF_MESH_PASSWORD, CONF_MESH_KEY, CONF_BRIDGE
+from .const import DOMAIN, CONF_MESH_NAME, CONF_MESH_PASSWORD, CONF_MESH_KEY
 from .zengge_connect import ZenggeConnect
 
 _LOGGER = logging.getLogger(__name__)
