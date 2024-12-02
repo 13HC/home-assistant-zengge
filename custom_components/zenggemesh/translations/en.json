@@ -11,8 +11,7 @@
         "data": {
           "mesh_name": "Mesh user name",
           "mesh_password": "Mesh password",
-          "mesh_key": "Mesh long term key",
-          "mesh_bridge": "Which Bridge to connect to"
+          "mesh_key": "Mesh long term key"
         }
       },
       "manual": {
@@ -29,8 +28,7 @@
         "data": {
           "username": "Username (email)",
           "password": "Password",
-          "country": "Country",
-          "bridge":  "Bridge"
+          "country": "Country"
         }
       },
       "select_device": {

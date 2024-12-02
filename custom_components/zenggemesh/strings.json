@@ -28,8 +28,7 @@
         "data": {
           "username": "Username (email)",
           "password": "Password",
-          "country": "Country",
-          "bridge":  "Bridge"
+          "country": "Country"
         }
       },
       "select_device": {

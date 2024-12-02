@@ -32,12 +32,11 @@ def get_country_server(country):
 
 class ZenggeConnect:
 
-    def __init__(self, username: str, password: str, country: str, installation_id: str = None, bridge: str = '0'):
+    def __init__(self, username: str, password: str, country: str, installation_id: str = None):
         global MAGICHUE_COUNTRY_SERVER,MAGICHUE_CONNECTURL
         self._username = username
         self._password = password
         self._country = country
-        self._bridge = bridge
 
         self._md5password = hashlib.md5(password.encode()).hexdigest()
 
@@ -87,7 +86,6 @@ class ZenggeConnect:
             'Accept-Encoding': 'gzip'
         }
 
-
         response = requests.post(MAGICHUE_CONNECTURL + MAGICHUE_USER_LOGIN_ENDPOINT, headers=headers, json=payload)
         _LOGGER.info("Zengge server response: " + repr(response.json()))
 
@@ -122,29 +120,8 @@ class ZenggeConnect:
             response = requests.get(MAGICHUE_CONNECTURL + MAGICHUE_GET_MESH_ENDPOINT + urllib.parse.quote_plus(self._user_id), headers=headers)
             if response.status_code != 200:
                 raise Exception('Loading data failed - %s' % response.json()['error'])
-            
-            response = requests.get(MAGICHUE_CONNECTURL + MAGICHUE_GET_MESH_ENDPOINT + urllib.parse.quote_plus(self._user_id), headers=headers)
-            if response.status_code != 200:
-                raise Exception('Loading data failed - %s' % response.json()['error'])
-            self._mesh = response.json()['result'][bridge]
+            self._mesh = response.json()['result'][1]
             return self._mesh
-
-
-       #     _Meshes = []
-       #     _tmpMesh = {}
-       #     _tmp2Mesh = {}
-       #     _LOGGER.debug("Response to MESH get: - %s" % str(response.json()['result']))
-       #     for result in response.json()['result'] :
-       #         _Meshes.append(result['placeUniID']);
-       #         #_tmp2Mesh = _tmpMesh
-       #         _tmpMesh = result
-#
-#            self._Meshes = _Meshes
-#            self._mesh = _tmpMesh
-#            #self._mesh = response.json()['result'][0]
-#            _LOGGER.debug("Array of Mesh placeUniID: - %s" % str(_Meshes))
-
-#            return self._mesh
         else:
             raise Exception('No login session detected! - %s' % response.json()['error'])
 
@@ -159,37 +136,8 @@ class ZenggeConnect:
                 'Accept-Encoding': 'gzip'
             }
 
-            for placeUniID in self._Meshes:
-                _LOGGER.debug("Get Device for Mesh placeUniID: - %s" % placeUniID)
-                MAGICHUE_GET_MESH_DEVICES_ENDPOINTNEW = MAGICHUE_GET_MESH_DEVICES_ENDPOINT.replace("placeUniID=","placeUniID=" + placeUniID)
-                MAGICHUE_GET_MESH_DEVICES_ENDPOINTNEW = MAGICHUE_GET_MESH_DEVICES_ENDPOINTNEW.replace("userId=","userId="+urllib.parse.quote_plus(self._user_id))
-
-                #response = requests.get(MAGICHUE_CONNECTURL + MAGICHUE_GET_MESH_DEVICES_ENDPOINTNEW, headers=headers)
-                async with aiohttp.ClientSession() as session:
-                    async with session.get(MAGICHUE_CONNECTURL + MAGICHUE_GET_MESH_DEVICES_ENDPOINTNEW, headers=headers) as response:
-                        if response.status != 200: #Previous code:   if response.status_code != 200:
-                            raise Exception('Device retrieval for mesh failed - %s' % response.json()['error'])
-                        else:
-                            responseJSON = (await response.json())['result'] #Previous Code:  responseJSON = response.json()['result'] #Previous Code:  
-                            _LOGGER.debug("Response to device get: - %s" % str(responseJSON))
-                            self._mesh.update({'devices':responseJSON})
-                            return responseJSON
-        else:
-            raise Exception('No login session detected! - %s' % response.json()['error'])
-            
-    async def getMeshDevices(MeshID, self):
-        if self._auth_token is not None and self._user_id is not None:
-            headers = {
-                'User-Agent': 'HaoDeng/1.5.7(ANDROID,10,en-US)',
-                'Accept-Language': 'en-US',
-                'Accept': 'application/json',
-                'token': self._auth_token,
-                'Content-Type': 'application/json',
-                'Accept-Encoding': 'gzip'
-            }
-
-            _LOGGER.debug("Get Device for Mesh placeUniID: - %s" % MeshID)
-            MAGICHUE_GET_MESH_DEVICES_ENDPOINTNEW = MAGICHUE_GET_MESH_DEVICES_ENDPOINT.replace("placeUniID=","placeUniID=" + MeshID)
+            placeUniID = self._mesh['placeUniID']
+            MAGICHUE_GET_MESH_DEVICES_ENDPOINTNEW = MAGICHUE_GET_MESH_DEVICES_ENDPOINT.replace("placeUniID=","placeUniID=" + placeUniID)
             MAGICHUE_GET_MESH_DEVICES_ENDPOINTNEW = MAGICHUE_GET_MESH_DEVICES_ENDPOINTNEW.replace("userId=","userId="+urllib.parse.quote_plus(self._user_id))
 
             #response = requests.get(MAGICHUE_CONNECTURL + MAGICHUE_GET_MESH_DEVICES_ENDPOINTNEW, headers=headers)
@@ -199,29 +147,7 @@ class ZenggeConnect:
                         raise Exception('Device retrieval for mesh failed - %s' % response.json()['error'])
                     else:
                         responseJSON = (await response.json())['result'] #Previous Code:  responseJSON = response.json()['result'] #Previous Code:  
-                        _LOGGER.debug("Response to device get: - %s" % str(responseJSON))
                         self._mesh.update({'devices':responseJSON})
                         return responseJSON
         else:
             raise Exception('No login session detected! - %s' % response.json()['error'])
-                
-                
-     #       placeUniID = self._mesh['placeUniID']
-     #       MAGICHUE_GET_MESH_DEVICES_ENDPOINTNEW = MAGICHUE_GET_MESH_DEVICES_ENDPOINT.replace("placeUniID=","placeUniID=" + placeUniID)
-     #       MAGICHUE_GET_MESH_DEVICES_ENDPOINTNEW = MAGICHUE_GET_MESH_DEVICES_ENDPOINTNEW.replace("userId=","userId="+urllib.parse.quote_plus(self._user_id))
-
-     #       #response = requests.get(MAGICHUE_CONNECTURL + MAGICHUE_GET_MESH_DEVICES_ENDPOINTNEW, headers=headers)
-     #       async with aiohttp.ClientSession() as session:
-     #           async with session.get(MAGICHUE_CONNECTURL + MAGICHUE_GET_MESH_DEVICES_ENDPOINTNEW, headers=headers) as response:
-     #               if response.status != 200: #Previous code:   if response.status_code != 200:
-     #                   raise Exception('Device retrieval for mesh failed - %s' % response.json()['error'])
-     #               else:
-     #                   responseJSON = (await response.json())['result'] #Previous Code:  responseJSON = response.json()['result'] #Previous Code:  
-     #                   _LOGGER.debug("Response to device get: - %s" % str(responseJSON))
-     #                   self._mesh.update({'devices':responseJSON})
-     #                   return responseJSON
-     #   else:
-     #       raise Exception('No login session detected! - %s' % response.json()['error'])
-
-    def MeshIDs(self):
-         return self._Meshes

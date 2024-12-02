@@ -12,7 +12,7 @@ from homeassistant import config_entries
 from homeassistant.const import (
     CONF_USERNAME,
     CONF_PASSWORD,
-    CONF_COUNTRY
+    CONF_COUNTRY,
 )
 
 from homeassistant.helpers.selector import (
@@ -27,8 +27,8 @@ from .zengge_connect import ZenggeConnect
 _LOGGER = logging.getLogger(__name__)
 
 
-def create_zengge_connect_object(username, password, country, bridge) -> ZenggeConnect:
-    return ZenggeConnect(username, password, country, bridge)
+def create_zengge_connect_object(username, password, country) -> ZenggeConnect:
+    return ZenggeConnect(username, password, country)
 
 
 class ZenggeMeshFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
@@ -59,8 +59,7 @@ class ZenggeMeshFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 user_input.get('mac'),
                 self._mesh_info.get(CONF_MESH_NAME),
                 self._mesh_info.get(CONF_MESH_PASSWORD),
-                self._mesh_info.get(CONF_MESH_KEY),
-                self._mesh_info.get(CONF_MESH_BRIDGE)
+                self._mesh_info.get(CONF_MESH_KEY)
             )
 
             if not test_ok:
@@ -74,8 +73,7 @@ class ZenggeMeshFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 user_input.get('name'),
                 self._mesh_info.get(CONF_MESH_NAME),
                 self._mesh_info.get(CONF_MESH_PASSWORD),
-                self._mesh_info.get(CONF_MESH_KEY),
-                self._mesh_info.get(CONF_MESH_BRIDGE)
+                self._mesh_info.get(CONF_MESH_KEY)
             )
 
         # Scan for devices
@@ -136,7 +134,6 @@ class ZenggeMeshFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         username: str = ''
         password: str = ''
         country: str = ''
-        bridge: str = ''
         typeStr: str = ''
         zengge_connect = None
 
@@ -147,11 +144,10 @@ class ZenggeMeshFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             _LOGGER.info('Before Country')
             country = user_input.get(CONF_COUNTRY)
             _LOGGER.info('Country: [%s]', country)
-            bridge = ''
 
-        if username and password and country and bridge:
+        if username and password and country:
             try:
-                zengge_connect = await self.hass.async_add_executor_job(create_zengge_connect_object, username, password, country, bridge)
+                zengge_connect = await self.hass.async_add_executor_job(create_zengge_connect_object, username, password, country)
             except Exception as e:
                 _LOGGER.error('Can not login to Zengge cloud [%s]', e)
                 errors[CONF_PASSWORD] = 'cannot_connect'
@@ -167,63 +163,54 @@ class ZenggeMeshFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                             mode=SelectSelectorMode.DROPDOWN, options=['AU','AL','CN','GB','ES','FR','DE','IT','JP','RU','US']
                         )
                     ),
-                    vol.Required(bridge): SelectSelector(
-                        SelectSelectorConfig(
-                            mode=SelectSelectorMode.DROPDOWN, options=['0','1','2','3','4','5','6','7','8','9','10']
-                        )
-                    ),
                 }),
                 errors=errors,
             )
 
-        _meshIDs = ['12f1fb9d-75f9-4d52-890b-aeddaf0fdeb8', '8fb78db4-87e1-4125-b8db-8c8306fc0b05']
-        _LOGGER.debug('Do we have mesh names? - %s', _meshIDs)
         devices = []
+        for device in await zengge_connect.devices():
+            _LOGGER.debug('Processing device - %s', device)
+            if 'wiringType' in device:
+                if device['wiringType'] == 0:
+                    _LOGGER.warning('Skipped device, wiringType of 0 - %s', device)
+                    continue
+            if 'deviceType' not in device:
+                _LOGGER.warning('Skipped device, missing deviceType - %s', device)
+                continue
+            if 'meshAddress' not in device or not device['meshAddress']:
+                _LOGGER.warning('Skipped device, missing meshAddress - %s', device)
+                continue
+            if 'macAddress' not in device:
+                _LOGGER.warning('Skipped device, missing macAddress - %s', device)
+                continue
+            if 'displayName' not in device:
+                _LOGGER.warning('Skipped device, missing displayName - %s', device)
+                continue
 
-        for MeshID in _meshIDs:
-            for device in await zengge_connect.getMeshDevices(MeshID):
-                _LOGGER.debug('Processing device - %s', device)
-                if 'wiringType' in device:
-                    if device['wiringType'] == 0:
-                        _LOGGER.warning('Skipped device, wiringType of 0 - %s', device)
-                        continue
-                if 'deviceType' not in device:
-                    _LOGGER.warning('Skipped device, missing deviceType - %s', device)
-                    continue
-                if 'meshAddress' not in device or not device['meshAddress']:
-                    _LOGGER.warning('Skipped device, missing meshAddress - %s', device)
-                    continue
-                if 'macAddress' not in device:
-                    _LOGGER.warning('Skipped device, missing macAddress - %s', device)
-                    continue
-                if 'displayName' not in device:
-                    _LOGGER.warning('Skipped device, missing displayName - %s', device)
-                    continue
+            if 'modelName' not in device:
+                device['modelName'] = 'unknown'
+            if 'vendor' not in device:
+                device['vendor'] = 'unknown'
+            if 'firmwareRevision' not in device:
+                device['firmwareRevision'] = 'unknown'
+            if 'versionNum' not in device:
+                device['versionNum'] = None
+            if device['deviceType'] == 65:
+                typeStr = 'light|color|temperature|dimming'
+            else:
+                _LOGGER.warning('deviceType #: %s', device['deviceType'])
+                typeStr = 'light|color|temperature|dimming'
 
-                if 'modelName' not in device:
-                    device['modelName'] = 'unknown'
-                if 'vendor' not in device:
-                    device['vendor'] = 'unknown'
-                if 'firmwareRevision' not in device:
-                    device['firmwareRevision'] = 'unknown'
-                if 'versionNum' not in device:
-                    device['versionNum'] = None
-                if device['deviceType'] == 65:
-                    typeStr = 'light|color|temperature|dimming'
-                else:
-                    _LOGGER.warning('deviceType #: %s', device['deviceType'])
-                    typeStr = 'light|color|temperature|dimming'
-
-                devices.append({
-                    'mesh_id': int(device['meshAddress']),
-                    'name': device['displayName'],
-                    'mac': device['macAddress'],
-                    'model': device['modelName'],
-                    'manufacturer': device['vendor'],
-                    'firmware': device['firmwareRevision'],
-                    'hardware': device['versionNum'],
-                    'type': typeStr
-                })
+            devices.append({
+                'mesh_id': int(device['meshAddress']),
+                'name': device['displayName'],
+                'mac': device['macAddress'],
+                'model': device['modelName'],
+                'manufacturer': device['vendor'],
+                'firmware': device['firmwareRevision'],
+                'hardware': device['versionNum'],
+                'type': typeStr
+            })
 
         if len(devices) == 0:
             return self.async_abort(reason="no_devices_found")
