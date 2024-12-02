@@ -21,13 +21,13 @@ Do you have [HACS](https://hacs.xyz/) installed?
 ### Install manually
 
 1. Install this platform by creating a `custom_components` folder in the same folder as your configuration.yaml, if it doesn't already exist.
-2. Create another folder `zenggemesh` in the `custom_components` folder. Copy all files from `custom_components/zenggemesh` into the `zenggemesh` folder.
+2. Create another folder `zenggemesh2` in the `custom_components` folder. Copy all files from `custom_components/zenggemesh2` into the `zenggemesh2` folder.
 
 ### Setup
 1. In Home Assistant click on `Settings`
 1. Click on `Devices & services`
 1. Click on `+ Add integration`
-1. Search for and select `Zengge Mesh`
+1. Search for and select `Zengge Mesh 2`
 1. Enter you `username` and `password` you also use in the **Hao Deng** app
 1. The system will download you light list and add them to Home Assistant
 1. Once the system could connect to one of the lights your lights will show up as _available_ and can be controlled from HA   

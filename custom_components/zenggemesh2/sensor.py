@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import logging
 
-from .zengge_mesh import ZenggeMesh
+from .zengge_mesh import ZenggeMesh2
 from typing import Any
 
 from homeassistant.helpers.entity import DeviceInfo
