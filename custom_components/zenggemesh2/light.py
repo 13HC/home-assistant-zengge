@@ -4,7 +4,7 @@ from __future__ import annotations
 import logging
 import math
 
-from .zengge_mesh import ZenggeMesh
+from .zengge_mesh import ZenggeMesh2
 from typing import Any, Dict, Optional
 
 import homeassistant.util.color as color_util
@@ -142,7 +142,7 @@ def h255_to_h360(h255):
 class ZenggeLight(CoordinatorEntity, LightEntity):
     """Representation of an Awesome Light."""
 
-    def __init__(self, coordinator: ZenggeMesh, mac: str, mesh_id: int, name: str, supported_color_modes: set[str] | None,
+    def __init__(self, coordinator: ZenggeMesh2, mac: str, mesh_id: int, name: str, supported_color_modes: set[str] | None,
                  manufacturer: str, model: str, firmware: str):
         """Initialize an Zengge MESH Light."""
         super().__init__(coordinator)

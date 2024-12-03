@@ -39,13 +39,13 @@ Do you have [HACS](https://hacs.xyz/) installed?
 
 If you run into issues during setup or controlling the lights please increase logging and provide them when creating an issue:
 
-Add `custom_components.zenggemesh: debug` to the `logger` config in you `configuration.yaml`:
+Add `custom_components.zenggemesh2: debug` to the `logger` config in you `configuration.yaml`:
 
 ```yaml
 logger:
   default: error
   logs:
-     custom_components.zenggemesh: debug
+     custom_components.zenggemesh2: debug
 ```
 Restart Home Assistant for logging to begin.<br/>
 Logs can be found under Settings - System - Logs - Home Assistant Core<br/>

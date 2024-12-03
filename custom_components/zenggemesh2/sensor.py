@@ -60,7 +60,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
 class ZenggeMeshSensor(CoordinatorEntity, SensorEntity):
     """Representation of an Awesome Light."""
 
-    def __init__(self, coordinator: ZenggeMesh, description: SensorEntityDescription):
+    def __init__(self, coordinator: ZenggeMesh2, description: SensorEntityDescription):
 
         """Initialize an Zengge MESH plug."""
         super().__init__(coordinator)
